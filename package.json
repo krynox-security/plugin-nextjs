@@ -1,0 +1,40 @@
+{
+  "name": "@krynox/captcha-next",
+  "version": "0.1.0",
+  "description": "Krynox Captcha for Next.js — middleware, server-side verify, and a React widget component. Privacy-first, proof-of-work CAPTCHA.",
+  "keywords": ["nextjs", "captcha", "krynox", "middleware", "react", "proof-of-work", "privacy"],
+  "homepage": "https://krynox.id",
+  "license": "MIT",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./react": {
+      "types": "./dist/component.d.ts",
+      "import": "./dist/component.js"
+    }
+  },
+  "files": ["dist"],
+  "scripts": {
+    "build": "tsc",
+    "prepublishOnly": "npm run build"
+  },
+  "peerDependencies": {
+    "next": ">=13",
+    "react": ">=18"
+  },
+  "devDependencies": {
+    "@types/react": "^18 || ^19",
+    "next": ">=13",
+    "react": ">=18",
+    "typescript": "^5.4.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/krynox-security/plugin-nextjs.git"
+  }
+}
