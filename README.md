@@ -67,12 +67,19 @@ fetch('/api/action', {
 
 ## API
 
-- `verifyKrynox(token, { secret?, apiHost?, remoteip?, timeoutMs? }) → Promise<KrynoxResult>`
+- `verifyKrynox(token, { secret?, apiHost?, remoteip?, timeoutMs?, retries? }) → Promise<KrynoxResult>`
 - `krynoxMiddleware({ header?, secret?, apiHost?, methods? })` → Next middleware
 - `<KrynoxCaptcha sitekey? challenge? apiHost? cdnHost? />` (from `/react`)
 
-`KrynoxResult`: `{ success, score?, risk?, hostname?, challengeTs?, errorCodes? }`
+`KrynoxResult`: `{ success, score?, risk?, hostname?, challengeTs?, errorCodes?, reasons?, agent?, human? }`
+
+- `reasons` — stable codes explaining the score (`tor-exit`, `elevated-request-rate`, …).
+- `agent` — a verified AI agent (Web Bot Auth) when forwarded: `{ verified, name, allowlisted }`.
+- `human` — a device-attested human (Private Access Token) when forwarded: `{ attested, method, issuer }`.
+
+Transient failures (network / 429 / 5xx) are retried automatically (default 2), with a per-verify
+idempotency key so a retried single-use token replays the first outcome instead of failing.
 
 ## License
 
-MIT. Built for [Krynox Captcha](https://krynox.id) · docs: <https://krynox.id/docs>
+MIT. Built for [Krynox Captcha](https://krynox.net) · docs: <https://krynox.net/docs>
