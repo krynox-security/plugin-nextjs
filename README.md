@@ -80,6 +80,19 @@ fetch('/api/action', {
 Transient failures (network / 429 / 5xx) are retried automatically (default 2), with a per-verify
 idempotency key so a retried single-use token replays the first outcome instead of failing.
 
+## Honeypot
+
+Enable **Honeypot** in the Krynox dashboard and the widget injects an invisible decoy field
+(`krynox-hp`) that only bots fill in. Because Next.js middleware can't read the request body, forward
+it in your Route Handler / Server Action verify call:
+
+```ts
+const result = await verifyKrynox(token, { honeypot: form.get('krynox-hp') as string });
+```
+
+The data plane then floors the score (report mode) or rejects with `honeypot-tripped` (enforce mode).
+See the [Honeypot docs](https://docs.krynox.net/server-side/honeypot/).
+
 ## License
 
 MIT. Built for [Krynox Captcha](https://krynox.net) · docs: <https://krynox.net/docs>
