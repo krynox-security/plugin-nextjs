@@ -23,8 +23,8 @@ export interface KrynoxCaptchaProps {
 export function KrynoxCaptcha({
   sitekey,
   challenge,
-  apiHost = 'https://api.krynox.id',
-  cdnHost = 'https://cdn.krynox.id',
+  apiHost = 'https://api.krynox.net',
+  cdnHost = 'https://cdn.krynox.net',
   ...rest
 }: KrynoxCaptchaProps): ReactElement {
   const cdn = cdnHost.replace(/\/$/, '');
