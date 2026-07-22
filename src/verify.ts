@@ -36,6 +36,9 @@ export interface VerifyOptions {
   apiHost?: string;
   /** End-user IP (recommended). */
   remoteip?: string;
+  /** Honeypot decoy value (the submitted `krynox-hp` field). Forwarded so the data plane can
+   *  flag/block a filled-in decoy per the site's Honeypot policy. Omit/empty when not tripped. */
+  honeypot?: string;
   /** Per-attempt request timeout in ms (default 5000). */
   timeoutMs?: number;
   /** Transient-failure (network / 429 / 5xx) retries (default 2). */
@@ -88,7 +91,7 @@ export async function verifyKrynox(
   const timeoutMs = options.timeoutMs ?? 5000;
   const retries = options.retries ?? 2;
   const idempotency_key = retries > 0 ? randomKey() : undefined;
-  const body = JSON.stringify({ secret, response: token, remoteip: options.remoteip, idempotency_key });
+  const body = JSON.stringify({ secret, response: token, remoteip: options.remoteip, honeypot: options.honeypot, idempotency_key });
 
   for (let attempt = 0; attempt <= retries; attempt++) {
     const controller = new AbortController();
