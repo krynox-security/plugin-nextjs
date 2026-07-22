@@ -10,6 +10,14 @@ export interface KrynoxMiddlewareConfig {
   apiHost?: string;
   /** Methods to enforce on (default: POST, PUT, PATCH, DELETE). */
   methods?: string[];
+  /**
+   * Hosting-provider header that is guaranteed to be overwritten by your trusted
+   * edge (for example `x-vercel-forwarded-for`). Disabled by default because
+   * Next.js has no portable socket IP in middleware.
+   */
+  trustedProxyHeader?: string;
+  /** Custom platform-specific IP resolver. Takes precedence over trustedProxyHeader. */
+  resolveIp?: (request: NextRequest) => string | undefined;
 }
 
 /**
@@ -33,11 +41,14 @@ export function krynoxMiddleware(config: KrynoxMiddlewareConfig = {}) {
   return async (request: NextRequest): Promise<NextResponse> => {
     if (!methods.includes(request.method)) return NextResponse.next();
 
+    const trustedHeader = config.trustedProxyHeader
+      ? request.headers.get(config.trustedProxyHeader)?.split(',')[0]?.trim()
+      : undefined;
     const token = request.headers.get(header);
     const result = await verifyKrynox(token, {
       secret: config.secret,
       apiHost: config.apiHost,
-      remoteip: request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ?? undefined,
+      remoteip: config.resolveIp?.(request) || trustedHeader || undefined,
     });
 
     if (!result.success) {

@@ -56,6 +56,11 @@ export const middleware = krynoxMiddleware();
 export const config = { matcher: ['/api/:path*'] };
 ```
 
+Next.js middleware has no portable socket IP API. The secure default therefore
+omits `remoteip`. On a managed edge, provide `resolveIp(request)` using the hosting
+provider's official API (on Vercel, `ipAddress` from `@vercel/functions`), or opt
+in only to a header that your edge removes and overwrites.
+
 ```ts
 // client: send the solved token as a header
 fetch('/api/action', {
@@ -68,7 +73,7 @@ fetch('/api/action', {
 ## API
 
 - `verifyKrynox(token, { secret?, apiHost?, remoteip?, timeoutMs?, retries? }) → Promise<KrynoxResult>`
-- `krynoxMiddleware({ header?, secret?, apiHost?, methods? })` → Next middleware
+- `krynoxMiddleware({ header?, secret?, apiHost?, methods?, trustedProxyHeader?, resolveIp? })` → Next middleware
 - `<KrynoxCaptcha sitekey? challenge? apiHost? cdnHost? />` (from `/react`)
 
 `KrynoxResult`: `{ success, score?, risk?, hostname?, challengeTs?, errorCodes?, reasons?, agent?, human? }`
